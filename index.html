@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Snako — a relaxing pencil-drawn snake game on a notebook page. Play, grow, and challenge your friends.">
+  <meta name="theme-color" content="#f7f1df">
+  <title>Snako — Relax. Grow. Challenge.</title>
+  <style>
+    :root {
+      --paper: #f7f1df;
+      --paper-dark: #eee5ce;
+      --ink: #2b2b2b;
+      --muted: #66625a;
+      --accent: #d94b3f;
+      --accent-dark: #a93931;
+      --grid: rgba(110, 150, 175, 0.18);
+      --card: rgba(255, 252, 244, 0.78);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+      background:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+    }
+
+    a { color: inherit; }
+
+    .page {
+      width: min(1120px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 10px 0 26px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 8px 22px rgba(0,0,0,.08);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 34px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .hero-copy {
+      padding: 28px 0;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-weight: 700;
+      color: var(--accent-dark);
+      margin-bottom: 14px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-family: "Marker Felt", "Comic Sans MS", cursive;
+      font-size: clamp(3.1rem, 8vw, 6.4rem);
+      line-height: .9;
+      letter-spacing: -0.055em;
+    }
+
+    .tagline {
+      margin: 0 0 18px;
+      font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+      font-weight: 750;
+    }
+
+    .description {
+      max-width: 650px;
+      margin: 0 0 26px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 192px;
+      padding: 13px 17px;
+      text-decoration: none;
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      background: #fffdf7;
+      box-shadow: 5px 5px 0 rgba(43,43,43,.10);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .store-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 rgba(43,43,43,.12);
+    }
+
+    .store-icon {
+      width: 26px;
+      font-size: 1.45rem;
+      text-align: center;
+    }
+
+    .store-text small {
+      display: block;
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.1;
+      margin-bottom: 3px;
+    }
+
+    .store-text strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .support-note {
+      color: var(--muted);
+      font-size: .93rem;
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 470px;
+      border: 2px solid rgba(43,43,43,.18);
+      border-radius: 28px;
+      background: rgba(255,255,255,.4);
+      box-shadow: 14px 14px 0 rgba(43,43,43,.07);
+      overflow: hidden;
+    }
+
+    .hero-art::before {
+      content: "a² + b² = c²";
+      position: absolute;
+      top: 20px;
+      left: 22px;
+      color: rgba(43,43,43,.48);
+      font-family: "Marker Felt", "Comic Sans MS", cursive;
+      font-size: 1.15rem;
+      transform: rotate(-4deg);
+    }
+
+    .pencil {
+      position: absolute;
+      left: 11%;
+      top: 8%;
+      width: 55%;
+      height: 48px;
+      background: repeating-linear-gradient(0deg, #e8ad24 0 10px, #f4c446 10px 16px);
+      border: 4px solid var(--ink);
+      border-radius: 13px;
+      transform: rotate(31deg);
+      box-shadow: 6px 7px 0 rgba(0,0,0,.08);
+    }
+
+    .pencil::after {
+      content: "";
+      position: absolute;
+      right: -48px;
+      top: -5px;
+      width: 0;
+      height: 0;
+      border-top: 29px solid transparent;
+      border-bottom: 29px solid transparent;
+      border-left: 50px solid #c79b68;
+      filter: drop-shadow(2px 0 0 var(--ink));
+    }
+
+    .snake {
+      position: absolute;
+      left: 8%;
+      bottom: 22%;
+      width: 86%;
+      height: 180px;
+      border-bottom: 28px solid var(--ink);
+      border-radius: 0 0 50% 50%;
+      transform: rotate(3deg);
+    }
+
+    .snake::before,
+    .snake::after {
+      content: "";
+      position: absolute;
+      border-bottom: 28px solid var(--ink);
+      border-radius: 50%;
+    }
+
+    .snake::before {
+      width: 58%;
+      height: 108px;
+      left: 9%;
+      bottom: 2px;
+      transform: rotate(-27deg);
+    }
+
+    .snake::after {
+      width: 48%;
+      height: 108px;
+      right: 0;
+      bottom: 12px;
+      transform: rotate(24deg);
+    }
+
+    .snake-head {
+      position: absolute;
+      right: 0;
+      bottom: 46px;
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: #f5ead5;
+      border: 5px solid var(--ink);
+      display: grid;
+      place-items: center;
+      font-size: 1.8rem;
+      z-index: 2;
+    }
+
+    .apple {
+      position: absolute;
+      right: 14%;
+      top: 20%;
+      font-size: 5rem;
+      transform: rotate(-7deg);
+      filter: drop-shadow(4px 6px 0 rgba(0,0,0,.07));
+    }
+
+    .note {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      padding: 13px 16px;
+      background: #f4d94d;
+      border: 2px solid rgba(43,43,43,.22);
+      font-family: "Marker Felt", "Comic Sans MS", cursive;
+      transform: rotate(-3deg);
+      box-shadow: 5px 5px 0 rgba(43,43,43,.08);
+    }
+
+    section {
+      margin-top: 70px;
+    }
+
+    .section-title {
+      font-family: "Marker Felt", "Comic Sans MS", cursive;
+      font-size: 2rem;
+      margin: 0 0 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      padding: 22px;
+      border: 2px solid rgba(43,43,43,.15);
+      border-radius: 20px;
+      background: var(--card);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 1.08rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 70px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(43,43,43,.25);
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    footer a {
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-art {
+        min-height: 420px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page { width: min(100% - 24px, 1120px); }
+      header { padding-bottom: 8px; }
+      .hero-copy { padding-top: 22px; }
+      .hero-art { min-height: 340px; border-radius: 22px; }
+      .snake { bottom: 21%; height: 135px; }
+      .snake-head { width: 66px; height: 66px; font-size: 1.35rem; bottom: 34px; }
+      .apple { font-size: 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <a class="brand" href="/">
+        <span class="brand-mark">🐍</span>
+        <span>Snako</span>
+      </a>
+    </header>
+
+    <section class="hero" style="margin-top:0">
+      <div class="hero-copy">
+        <div class="eyebrow">A little game for a brighter day</div>
+        <h1>Snako</h1>
+        <p class="tagline">Relax. Grow. Challenge.</p>
+        <p class="description">
+          A playful pencil-drawn snake game on a notebook page. Eat, grow,
+          chase high scores, and challenge your friends in 1v1 matches.
+        </p>
+
+        <div class="buttons">
+          <!-- Replace these URLs if your final store listing URLs differ. -->
+          <a class="store-btn" href="https://apps.apple.com/app/id6809025169" target="_blank" rel="noopener">
+            <span class="store-icon"></span>
+            <span class="store-text">
+              <small>Download on the</small>
+              <strong>App Store</strong>
+            </span>
+          </a>
+
+          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.avesta.snako" target="_blank" rel="noopener">
+            <span class="store-icon">▶</span>
+            <span class="store-text">
+              <small>Get it on</small>
+              <strong>Google Play</strong>
+            </span>
+          </a>
+        </div>
+
+        <div class="support-note">
+          Need help? <a href="mailto:yunus.kocgurbuz@gmail.com">Contact Snako Support</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-label="Snako notebook illustration">
+        <div class="pencil"></div>
+        <div class="apple">🍎</div>
+        <div class="snake">
+          <div class="snake-head">☺</div>
+        </div>
+        <div class="note">Eat • Grow • Relax</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Made for a quick break</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Simple to play</h3>
+          <p>Easy one-finger controls and a familiar snake-game loop you can pick up in seconds.</p>
+        </article>
+        <article class="card">
+          <h3>Keep growing</h3>
+          <p>Collect food, get longer, chase better scores, and see how far you can go.</p>
+        </article>
+        <article class="card">
+          <h3>Challenge friends</h3>
+          <p>Find friends, send a 1v1 invitation, and jump into a match together.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      <div>© 2026 Snako</div>
+      <div>
+        <a href="/privacy/">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:yunus.kocgurbuz@gmail.com">Support</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
